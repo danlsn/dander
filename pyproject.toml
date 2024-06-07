@@ -25,7 +25,9 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-  'typer'
+  'typer',
+  'loguru',
+  'rich'
 ]
 
 [project.scripts]
