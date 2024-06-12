@@ -1,0 +1,28 @@
+site_name: MkDocs example
+site_description: MkDocs example site
+site_author: Daniel Lawson
+site_url: https://danlsn.github.io/dander
+repo_name: danlsn/dander
+repo_url: https://github.com/danlsn/dander
+edit_uri: blob/master/docs
+copyright: 'Copyright'
+
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+
+nav:
+  - Home: index.md
+
+plugins:
+  - autorefs
+
+markdown_extensions:
+  - callouts
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - codehilite
+  - mkautodoc

@@ -1,0 +1,7 @@
+[env]
+requires = [
+    "hatch-mkdocs",
+]
+
+[env.collectors.mkdocs.docs]
+path = "mkdocs.yml"
