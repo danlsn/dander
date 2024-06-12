@@ -1,0 +1,68 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dander"
+dynamic = ["version"]
+description = 'Data Analytics & Data Engineering Resources'
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Daniel Lawson", email = "52593003+danlsn@users.noreply.github.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  'typer',
+  'loguru',
+  'rich'
+]
+
+[project.scripts]
+dander = "dander.cli:app"
+
+[project.urls]
+Documentation = "https://github.com/danlsn/dander#readme"
+Issues = "https://github.com/danlsn/dander/issues"
+Source = "https://github.com/danlsn/dander"
+
+[tool.hatch.version]
+path = "src/dander/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/dander tests}"
+
+[tool.coverage.run]
+source_pkgs = ["dander", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/dander/__about__.py",
+]
+
+[tool.coverage.paths]
+dander = ["src/dander", "*/dander/src/dander"]
+tests = ["tests", "*/dander/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
