@@ -41,6 +41,10 @@ Source = "https://github.com/danlsn/dander"
 [tool.hatch.version]
 path = "src/dander/__about__.py"
 
+[tool.hatch.envs.default]
+type = "virtual"
+path = ".venv"
+
 [tool.hatch.envs.types]
 extra-dependencies = [
   "mypy>=1.0.0",
