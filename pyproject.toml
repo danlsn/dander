@@ -27,7 +27,8 @@ classifiers = [
 dependencies = [
   'typer',
   'loguru',
-  'rich'
+  'rich',
+  "pyperclip>=1.9.0",
 ]
 
 [project.scripts]
@@ -37,6 +38,14 @@ dander = "dander.cli:app"
 Documentation = "https://github.com/danlsn/dander#readme"
 Issues = "https://github.com/danlsn/dander/issues"
 Source = "https://github.com/danlsn/dander"
+
+[project.optional-dependencies]
+dev = [
+  'black',
+]
+dbt = [
+  'dbt-core',
+]
 
 [tool.hatch.version]
 path = "src/dander/__about__.py"
@@ -69,4 +78,9 @@ exclude_lines = [
   "no cov",
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:",
+]
+
+[dependency-groups]
+dev = [
+    "black>=24.8.0",
 ]
