@@ -14,10 +14,20 @@ app: typer.Typer = typer.Typer()
 def reformat_json(
     file_path: str,
     *,
-    write_file: Annotated[bool, typer.Option("--write", "-w", help="Write formatted JSON to file in-place.")] = False,
-    verbose: Annotated[bool, typer.Option("--verbose", "-v", help="Print formatted JSON to console.")] = False,
+    write_file: Annotated[
+        bool,
+        typer.Option("--write", "-w", help="Write formatted JSON to file in-place."),
+    ] = False,
+    verbose: Annotated[
+        bool, typer.Option("--verbose", "-v", help="Print formatted JSON to console.")
+    ] = False,
 ):
-    logger.add(sys.stderr, format="{time} {level} {message}", filter="my_module", level="DEBUG" if verbose else "INFO")
+    logger.add(
+        sys.stderr,
+        format="{time} {level} {message}",
+        filter="my_module",
+        level="DEBUG" if verbose else "INFO",
+    )
     with Path(file_path).open() as f:
         logger.debug(f"Reformatting JSON file: {file_path}")
         data: dict = json.load(f)
@@ -33,12 +43,21 @@ def reformat_json(
 
 @app.command()
 def split_json_file(
-        file_path: str,
-        *,
-        depth: Annotated[int, typer.Option("--depth", "-d", help="Depth to split JSON file at.")] = 1,
-        verbose: Annotated[bool, typer.Option("--verbose", "-v", help="Print debug logs to console.")] = False,
+    file_path: str,
+    *,
+    depth: Annotated[
+        int, typer.Option("--depth", "-d", help="Depth to split JSON file at.")
+    ] = 1,
+    verbose: Annotated[
+        bool, typer.Option("--verbose", "-v", help="Print debug logs to console.")
+    ] = False,
 ):
-    logger.add(sys.stderr, format="{time} {level} {message}", filter="my_module", level="DEBUG" if verbose else "INFO")
+    logger.add(
+        sys.stderr,
+        format="{time} {level} {message}",
+        filter="my_module",
+        level="DEBUG" if verbose else "INFO",
+    )
     file_path: Path = Path(file_path)
     if file_path.is_dir():
         logger.error(f"Path is a directory: {file_path}")
@@ -69,6 +88,23 @@ def split_json_file(
     #     logger.debug("Writing formatted JSON to file in-place")
     #     with Path(file_path).open("w") as f:
     #         json.dump(data, f, indent=4)
+
+
+@app.command()
+def basename(file_path: Path=None):
+    """
+    Get the basename of a file path.
+    """
+    if file_path is None:
+        try:
+            import pyperclip
+            logger.info("No file path provided. Getting file path from clipboard.")
+            file_path = pyperclip.paste()
+        except ImportError:
+            logger.error("pyperclip is not installed. Please install it using pip.")
+            raise typer.Exit(code=1)
+    logger.debug(f"Getting basename of file path: {file_path}")
+    return Path(file_path).stem
 
 
 if __name__ == "__main__":
