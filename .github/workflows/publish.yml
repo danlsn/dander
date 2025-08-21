@@ -1,0 +1,61 @@
+name: Publish to PyPI
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Build and publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Ensure PYPI token is available
+        env:
+          PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          if [ -z "$PYPI_API_TOKEN" ]; then
+            echo "Missing secret: PYPI_API_TOKEN" >&2
+            exit 1
+          fi
+
+      - name: Install build tools
+        run: python -m pip install --upgrade pip hatch twine
+
+      - name: Build distributions
+        run: hatch build
+
+      - name: Create and push tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          version=$(python -c "import re,io;print(re.search(r'__version__\s*=\s*[\'\"]([^\'\"]+)[\'\"]', open('src/dander/__about__.py').read()).group(1))")
+          echo "Version: $version"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "v$version" -m "Release $version" || echo "tag exists"
+          git push origin "refs/tags/v$version" || echo "push tag failed"
+
+      - name: List built artifacts
+        run: ls -la dist || true
+
+      - name: Publish to PyPI with hatch
+        env:
+          PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          export HATCH_INDEX_AUTH="__token__:$PYPI_API_TOKEN"
+          echo "Publishing with hatch..."
+          hatch publish dist/* --yes
