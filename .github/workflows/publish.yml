@@ -54,8 +54,8 @@ jobs:
 
       - name: Publish to PyPI with hatch
         env:
-          PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+          HATCH_INDEX_USER: ${{ secrets.HATCH_INDEX_USER }}
+          HATCH_INDEX_AUTH: ${{ secrets.HATCH_INDEX_AUTH }}
         run: |
-          export HATCH_INDEX_AUTH="__token__:$PYPI_API_TOKEN"
           echo "Publishing with hatch..."
-          hatch publish dist/* --yes
+          hatch publish
