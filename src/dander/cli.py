@@ -1,16 +1,17 @@
+
 import sys
-import json
 from pathlib import Path
 from typing import Annotated
-
-import rich
 import typer
 from loguru import logger
+from .io import json_utils
 
-app: typer.Typer = typer.Typer()
+app = typer.Typer()
+json_app = typer.Typer()
+app.add_typer(json_app, name="json")
 
 
-@app.command()
+@json_app.command("format")
 def reformat_json(
     file_path: str,
     *,
@@ -28,20 +29,10 @@ def reformat_json(
         filter="my_module",
         level="DEBUG" if verbose else "INFO",
     )
-    with Path(file_path).open() as f:
-        logger.debug(f"Reformatting JSON file: {file_path}")
-        data: dict = json.load(f)
-
-    if not write_file or verbose:
-        logger.debug("Printing formatted JSON to console")
-        rich.print(data)
-    else:
-        logger.debug("Writing formatted JSON to file in-place")
-        with Path(file_path).open("w") as f:
-            json.dump(data, f, indent=4)
+    json_utils.reformat_json_file(file_path, write_file=write_file, verbose=verbose)
 
 
-@app.command()
+@json_app.command("split")
 def split_json_file(
     file_path: str,
     *,
@@ -58,36 +49,11 @@ def split_json_file(
         filter="my_module",
         level="DEBUG" if verbose else "INFO",
     )
-    file_path: Path = Path(file_path)
-    if file_path.is_dir():
-        logger.error(f"Path is a directory: {file_path}")
+    try:
+        json_utils.split_json_file(file_path, depth=depth, verbose=verbose)
+    except ValueError as e:
+        typer.echo(str(e), err=True)
         raise typer.Exit(code=1)
-
-    with Path(file_path).open() as f:
-        logger.debug(f"Reformatting JSON file: {file_path}")
-        data: dict | list = json.load(f)
-
-    if not isinstance(data, dict) and not isinstance(data, list):
-        logger.error(f"JSON data is not a dict or list: {data}")
-        raise typer.Exit(code=1)
-
-    if isinstance(data, dict):
-        output = {f"{file_path.stem}__{k}": v for k, v in data.items()}
-    else:
-        output = {f"{file_path.stem}__{i}": v for i, v in enumerate(data)}
-
-    for k, v in output.items():
-        logger.debug(f"Writing JSON file: {file_path.parent / f'{k}.json'}")
-        with Path(file_path.parent / f"{k}.json").open("w") as f:
-            json.dump(v, f, indent=2)
-
-    # if not write_file or verbose:
-    #     logger.debug("Printing formatted JSON to console")
-    #     rich.print(data)
-    # else:
-    #     logger.debug("Writing formatted JSON to file in-place")
-    #     with Path(file_path).open("w") as f:
-    #         json.dump(data, f, indent=4)
 
 
 @app.command()
