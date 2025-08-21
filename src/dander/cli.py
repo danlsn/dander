@@ -1,10 +1,9 @@
-
 import sys
 from pathlib import Path
 from typing import Annotated
 import typer
 from loguru import logger
-from .io import json_utils
+import dander.io.json_utils as json_utils
 
 app = typer.Typer()
 json_app = typer.Typer()
@@ -57,13 +56,14 @@ def split_json_file(
 
 
 @app.command()
-def basename(file_path: Path=None):
+def basename(file_path: Path = None):
     """
     Get the basename of a file path.
     """
     if file_path is None:
         try:
             import pyperclip
+
             logger.info("No file path provided. Getting file path from clipboard.")
             file_path = pyperclip.paste()
         except ImportError:
