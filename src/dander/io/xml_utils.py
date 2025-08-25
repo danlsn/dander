@@ -29,11 +29,6 @@ def reformat_xml_file(
     import rich
 
     xml_file_path = Path(file_path)
-    if not xml_file_path.is_file():
-        raise FileNotFoundError(f"File not found: {xml_file_path}")
-    if strict and not xml_file_path.suffix == ".xml":
-        raise ValueError(f"File is not an XML file: {xml_file_path}")
-
     xml_file_content = get_xml_file_contents(file_path, strict=strict)
     xml_data = pretty_print_xml(xml_file_content, indent=indent)
     logger.debug(
