@@ -4,10 +4,13 @@ from typing import Annotated
 import typer
 from loguru import logger
 import dander.io.json_utils as json_utils
+import dander.io.xml_utils as xml_utils
 
 app = typer.Typer()
 json_app = typer.Typer()
 app.add_typer(json_app, name="json")
+xml_app = typer.Typer()
+app.add_typer(xml_app, name="xml")
 
 
 @json_app.command("format")
@@ -53,6 +56,45 @@ def split_json_file(
     except ValueError as e:
         typer.echo(str(e), err=True)
         raise typer.Exit(code=1)
+
+
+@xml_app.command("format")
+def reformat_xml(
+    file_path: str,
+    *,
+    strict: Annotated[
+        bool,
+        typer.Option(
+            "--strict",
+            "-s",
+            help="Enforce strict-mode XML formatting, input file must be an XML file.",
+        ),
+    ] = True,
+    indent: Annotated[
+        int,
+        typer.Option(
+            "--indent",
+            "-i",
+            help="Number of spaces used per indentation level for XML formatting.",
+        ),
+    ] = 2,
+    write_file: Annotated[
+        bool,
+        typer.Option("--write", "-w", help="Write formatted XML to file in-place."),
+    ] = False,
+    verbose: Annotated[
+        bool, typer.Option("--verbose", "-v", help="Print formatted XML to console.")
+    ] = False,
+):
+    logger.add(
+        sys.stderr,
+        format="{time} {level} {message}",
+        filter="my_module",
+        level="DEBUG" if verbose else "INFO",
+    )
+    xml_utils.reformat_xml_file(
+        file_path, strict=strict, indent=indent, write_file=write_file, verbose=verbose
+    )
 
 
 @app.command()
