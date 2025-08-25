@@ -48,6 +48,6 @@ def reformat_xml_file(
         xml_file_path.write_text(xml_data)
 
 
-if __name__ == "__main__":
-    file = r"C:\Users\E124584\Downloads\denodo__v_enrol_all__diagram.svg"
+    # Example usage: replace 'example.xml' with your XML file path
+    file = "example.xml"
     reformat_xml_file(file, strict=False, write_file=True)
