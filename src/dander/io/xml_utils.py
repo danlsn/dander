@@ -26,8 +26,6 @@ def reformat_xml_file(
     verbose: bool = False,
 ):
     """Reformat an XML file. Optionally write in-place or print to console."""
-    import rich
-
     xml_file_path = Path(file_path)
     xml_file_content = get_xml_file_contents(file_path, strict=strict)
     xml_data = pretty_print_xml(xml_file_content, indent=indent)
