@@ -39,8 +39,3 @@ def reformat_xml_file(
     else:
         logger.debug("Writing formatted XML to file in-place")
         xml_file_path.write_text(xml_data)
-
-
-    # Example usage: replace 'example.xml' with your XML file path
-    file = "example.xml"
-    reformat_xml_file(file, strict=False, write_file=True)
